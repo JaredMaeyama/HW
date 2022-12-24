@@ -1,0 +1,159 @@
+<HTML>
+<body>
+  <script src="https://threejs.org/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.101.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js"></script>
+  <script>
+    window.onload = init;
+    let renderer, scene, camera;
+    let glass, back, clock;
+    let screw =[], didgets=[];
+    let penweight, penarm, hr,min,sec,bar;
+    let penref, hrref,minref,secref;
+    let lfr;
+    let floor;
+    let metal = new THREE.MeshPhongMaterial({color:0xC0C0C0}), white= new THREE.MeshStandardMaterial({color:0xffffff});
+    metal.shinieness = 100;
+    white.shinieness = 1;
+    function init(){
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(800,600);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.BasicShadowMap;
+      document.body.appendChild(renderer.domElement);
+      scene = new THREE.Scene();
+      glass = new THREE.Mesh(new THREE.BoxGeometry(1,20,10), new THREE.MeshPhongMaterial(0x000000));
+      //glass.castShadow = true;
+      glass.receiveShadow = true;
+      glass.material.transparent = true;
+      glass.material.opacity = .3;
+      glass.material.shinieness = 10;
+      scene.add(glass);
+      back = new THREE.Mesh(new THREE.BoxGeometry(2,20,10), white);
+      back.castShadow = true;
+      back.receiveShadow = true;
+      back.translateX(3);
+      scene.add(back);
+      let c = 0;
+      for(let a = -9;a<20;a+=18){
+        for(let b = -4;b<5;b+=8){
+          screw[c] = new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.2,3,1000), metal);
+          screw[c].receiveShadow = true;
+          screw[c].castShadow=true;
+          screw[c].translateZ(b);
+          screw[c].translateY(a);
+          screw[c].translateX(-2.2);
+          screw[c].rotateZ(Math.PI/2);
+          back.add(screw[c]);
+          c++;
+        }
+      }
+      clock=new THREE.Mesh(new THREE.CylinderGeometry(3,3,.5,1000), new THREE.MeshPhongMaterial({color:0x000000}));
+      clock.material.shinieness = 1;
+      clock.castShadow = true;
+      clock.receiveShadow = true;
+      clock.rotateZ(Math.PI/2);
+      clock.translateX(5);
+      clock.translateY(2);
+      back.add(clock);
+
+      c = 0;
+      for(let a = 0;a<=Math.PI*2;a+=Math.PI/6){
+          didgets[c] = new THREE.Mesh(new THREE.BoxGeometry(.1,.7,1), metal);
+          didgets[c].castShadow = true;
+          didgets[c].receiveShadow = true;
+          didgets[c].rotateY(a);
+          didgets[c].translateZ(2.2);
+          didgets[c].translateY(.1);
+          clock.add(didgets[c]);
+          c++;
+      }
+      penref = new THREE.Object3D();
+      clock.add(penref);
+      penarm = new THREE.Mesh(new THREE.BoxGeometry(10,.2,.2),metal);
+      penarm.castShadow = true;
+      penarm.receiveShadow = true;
+      penarm.translateX(-5);
+      penarm.translateY(-.45);
+
+      penref.add(penarm);
+      penweight = new THREE.Mesh(new THREE.BoxGeometry(.5,.5,.5),metal);
+      penweight.castShadow = true;
+      penweight.receiveShadow = true;
+      penweight.translateX(-5);
+      penarm.add(penweight);
+
+      hrref = new THREE.Object3D();
+      clock.add(hrref);
+      minref = new THREE.Object3D();
+      clock.add(minref);
+      secref = new THREE.Object3D();
+      clock.add(secref);
+      hr = new THREE.Mesh(new THREE.BoxGeometry(1.5,.1,.3),white);
+      hr.castShadow = true;
+      hr.receiveShadow = true;
+      hr.translateX(.7);
+      hr.translateY(.3);
+      hrref.add(hr);
+      min = new THREE.Mesh(new THREE.BoxGeometry(1.5,.1,.2),white);
+      min.castShadow = true;
+      min.receiveShadow = true;
+      min.translateX(.7);
+      min.translateY(.4);
+      minref.add(min);
+      sec = new THREE.Mesh(new THREE.BoxGeometry(1.5,.1,.1),new THREE.MeshStandardMaterial({color:0xff0000}));
+      sec.castShadow = true;
+      sec.receiveShadow = true;
+      sec.translateX(.7);
+      sec.translateY(.5);
+      secref.add(sec);
+
+      bar= new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,3,1000),metal);
+      bar.castShadow = true;
+      bar.receiveShadow = true;
+      bar.translateY(-1);
+      clock.add(bar);
+      floor = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000),new THREE.MeshStandardMaterial({color:0xD3D3D3}));
+      floor.rotateX(3*Math.PI/2);
+      floor.translateZ(-10)
+      floor.receiveShadow = true;
+      scene.add(floor);
+      camera = new THREE.PerspectiveCamera(30, 800/600, 0.1, 1000);
+      camera.position.set(-50, 0, 10);
+      camera.lookAt(scene.position);
+      const light = new THREE.PointLight( 0xffffff, 1,0 ,2);
+      light.position.set( -20, 10, 10 );
+      lfr= new THREE.Object3D();
+      const lighta = new THREE.AmbientLight(0xffffff,.1);
+      light.shadow.camera.near = .1;
+      light.shadow.camera.far = 1000;
+      light.castShadow = true;
+      scene.add( lfr );
+      lfr.add(light);
+      scene.add( lighta );
+
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //  controls.autoRotate = true;
+      //controls.autoRotateSpeed = 3.0; // revolution per minute
+      animate();
+
+    }
+
+    function animate()
+    {
+      requestAnimationFrame(animate)
+      controls.update();
+      renderer.setClearColor(0xdddddd)
+      renderer.render(scene, camera)
+      penref.rotation.y=(Math.cos(Date.now()*0.001*Math.PI*1)*Math.PI*.05);
+      secref.rotation.y=(-1*Date.now()*0.001)*(Math.PI*2)/60;
+      minref.rotation.y=secref.rotation.y/60;
+      hrref.rotation.y=(-1*Date.now()*0.001/60*(Math.PI*2)/60/12)-5/6*Math.PI;
+      lfr.rotateY(.01);
+
+    }
+
+  </script>
+</body>
+</HTML>

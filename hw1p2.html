@@ -1,0 +1,83 @@
+//(10 pts.) Draw the SCU logo below using an svg element (you may omit the eagle) and animate it by rotating the entire logo:
+<!doctype html>
+<html>
+  <body>
+    <svg width = 500 height = 500>
+      <path id= "textcircle" d="
+            M 102, 250
+            a 148,148 0 1,1 296,0
+            a 148,148 0 1,1 -296,0
+        "/>
+        <path id= "ddate" d="
+              M 65, 250
+              a 185,185 0 1,0 370,0
+              a 185,185 0 1,0 -370,0
+          "/>
+      <circle cx = 250 cy= 250 r = 195 fill="white" stroke ="red" stroke-width="10"></circle>
+      <circle cx = 250 cy= 250 r = 142.5 fill="white" stroke ="red" stroke-width="5"></circle>
+      <circle cx = 81.25 cy= 250 r = 10 fill="red" transform ="rotate(-50 250 250)" >
+        <animateTransform attributeName="transform"
+          type="rotate"
+          from= "-50 250 250" to = "310 250 250"
+          begin="0s" dur="10s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle cx = 81.25 cy= 250 r = 10 fill="red" transform ="rotate(-130 250 250)" >
+        <animateTransform attributeName="transform"
+          type="rotate"
+          from= "-130 250 250" to = "230 250 250"
+          begin="0s" dur="10s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <text id = "SCU" style = "fill:red; font-size:50px" width = "500" transform ="rotate(-38 250 250)" >
+        <textPath xlink:href = "#textcircle">
+          SANTA CLARA UNIVERSITY
+        </textPath>
+        <animateTransform attributeName="transform"
+          type="rotate"
+          from= "-38 250 250" to = "322 250 250"
+          begin="0s" dur="10s"
+          repeatCount="indefinite"
+        />
+      </text>
+      <text id = "date" style = "fill:red; font-size:50px" width = "500" transform ="rotate(-70 250 250)" >
+        <textPath xlink:href = "#ddate">
+          1  8  5  1
+        </textPath>
+        <animateTransform attributeName="transform"
+          type="rotate"
+          from= "-70 250 250" to = "290 250 250"
+          begin="0s" dur="10s"
+          repeatCount="indefinite"
+        />
+      </text>
+      <path id = "sheildtop", d="M 250 240 C 240 260 180 270 160 260 C 180 310 220 390 250 392.5 C 280 390 320 310 340 260 C 320 270 260 260 250 240" style = "fill:none" stroke="red" stroke-width="5" ><animateTransform attributeName="transform"
+        type="rotate"
+        from= "0 250 250" to = "360 250 250"
+        begin="0s" dur="10s"
+        repeatCount="indefinite"
+      /></path>
+      <text style = "fill:red; font-size:50px" x="254" y="340" text-anchor="middle">IHS<animateTransform attributeName="transform"
+        type="rotate"
+        from= "0 250 250" to = "360 250 250"
+        begin="0s" dur="10s"
+        repeatCount="indefinite"
+      /></text>
+      <line x1= "250" y1= "260" x2= "250" y2= "320" style="stroke:red;stroke-width:4"><animateTransform attributeName="transform"
+        type="rotate"
+        from= "0 250 250" to = "360 250 250"
+        begin="0s" dur="10s"
+        repeatCount="indefinite"
+      /></line>
+      <line x1= "235" y1= "280" x2= "265" y2= "280" style="stroke:red;stroke-width:4"><animateTransform attributeName="transform"
+        type="rotate"
+        from= "0 250 250" to = "360 250 250"
+        begin="0s" dur="10s"
+        repeatCount="indefinite"
+      /></line>
+    </svg>
+  </body>
+
+</html>

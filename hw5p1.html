@@ -1,0 +1,77 @@
+//Design and render using LatheGeometry a close approximation of the vase below. Include an OrbitControls element to allow the user to examine your vase at any angle.
+<HTML>
+<body>
+  <script src="https://threejs.org/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.101.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js"></script>
+  <script>
+    window.onload = init;
+    let renderer, scene, camera;
+    Vasematt = new THREE.MeshPhongMaterial({map:new THREE.TextureLoader().load('./Assets/vasetexture.jpg'),side:THREE.DoubleSide, shinieness:300})
+    function init(){
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(800,600);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.BasicShadowMap;
+      document.body.appendChild(renderer.domElement);
+      scene = new THREE.Scene();
+
+      const points = [];
+for ( let i = -1; i < Math.PI*3.9; i +=.1 ) {
+	points.push( new THREE.Vector2( 1.8*Math.sin( i /3.9+Math.PI*3/2 )  + 7.1, ( i +1)) );
+}
+for ( let i = 0; i < Math.PI*3; i +=.1 ) {
+	points.push( new THREE.Vector2( -2.4*Math.cos( i /2.7+Math.PI )  + 6.5, ( i +Math.PI*3.9+1)) );
+}
+const vase = new THREE.Mesh( new THREE.LatheGeometry( points ), Vasematt );
+scene.add( vase );
+
+const bottomring = new THREE.Mesh(new THREE.TorusGeometry(( 1.8*Math.sin( -1 /3.9+Math.PI*3/2 )  + 7.1),1,100,100),Vasematt);
+bottomring.rotateX(Math.PI/2)
+scene.add(bottomring);
+
+const topring = new THREE.Mesh(new THREE.TorusGeometry(( -2.4*Math.cos( Math.PI*3 /2.7+Math.PI )  + 6.5),.5,100,100),Vasematt);
+topring.rotateX(Math.PI/2)
+topring.translateZ(-Math.PI*3-Math.PI*3.9-1)
+scene.add(topring);
+
+      floor = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000),new THREE.MeshStandardMaterial({color:0xD3D3D3}));
+      floor.rotateX(3*Math.PI/2);
+      floor.translateZ(-1)
+      floor.receiveShadow = true;
+      scene.add(floor);
+      camera = new THREE.PerspectiveCamera(30, 800/600, 0.1, 1000);
+      camera.position.set(100, 100, 100);
+      camera.lookAt(scene.position);
+      const light = new THREE.PointLight( 0xffffff, 1,0 ,2);
+      light.position.set( -20, 10, 10 );
+      lfr= new THREE.Object3D();
+      const lighta = new THREE.AmbientLight(0xffffff,.1);
+      light.shadow.camera.near = .1;
+      light.shadow.camera.far = 1000;
+      light.castShadow = true;
+      scene.add( lfr );
+      lfr.add(light);
+      scene.add( lighta );
+
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //  controls.autoRotate = true;
+      //controls.autoRotateSpeed = 3.0; // revolution per minute
+      animate();
+
+    }
+
+    function animate()
+    {
+      requestAnimationFrame(animate)
+      controls.update();
+      renderer.setClearColor(0xdddddd)
+      renderer.render(scene, camera)
+      lfr.rotateY(.01);
+
+    }
+
+  </script>
+  </body>
+  </HTML>
